@@ -1,0 +1,98 @@
+{% extends 'blank.html' %}
+{% load staticfiles %}
+{% block title %}
+    Mulai Ujian
+{% endblock %}
+
+{% block ujian_main_active %}
+    active
+{% endblock %}
+
+{% block ujian_active %}
+    active
+{% endblock %}
+
+{% block content %}
+ <!-- Main content -->
+    <section class="content">
+        <div class="row">
+        <!-- left column -->
+        <div class="col-md-12 col-xs-12">
+        <div class="alert alert-success">
+                <button type="button" class="close" >&times;</button>
+                <h4><i class="icon fa fa-clock-o"></i> Waktu Tersisa : <a id="countDownSelesai"></a></h4>
+                <h5>Perubahan akan tersimpan apabila anda berpindah pertanyaan/soal, namun kalkulasi nilai akan dilakukan setelah waktu habis atau setelah tombol Simpan ditekan</h5>
+        </div>
+             <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Soal Nomor : {{ nomor_soal }}</h3>
+            </div>
+
+            <!-- /.box-header -->
+            <!-- Soal -->
+            <div class="box-body">
+                <h4>{{ soal.teks_soal }}</h4>
+                <br>
+                <h5>Pilih Salah Satu :</h5>
+              <form name="formsoal" onsubmit="return onPindahSoal();" method="post">
+                {% csrf_token %}
+                  {% for pilihan in form.daftar_pilihan %}
+                <div class="radio">
+                    <label>
+                        {{ pilihan.tag }}
+                        {{ pilihan.data.value }} :
+                        {{ pilihan.choice_label }}
+                    </label>
+                </div>
+                {% endfor %}
+             <div class="box-footer">
+                {% if nomor_soal != '1' %}
+                    <!-- Jangan tampilkan tombol sebelum pada halaman pertama -->
+                    <button name="tombol_sebelumnya" type="submit" class="btn btn-default" value="sebelumnya">Pertanyaan Sebelumnya</button>
+                {% endif %}
+                {% if tersedia_soal_berikutnya %}
+                    <!-- Tampilkan saat ada soal berikutnya -->
+                    <button name="tombol_berikutnya" type="submit" class="btn btn-primary pull-right" value="berikutnya">Pertanyaan Berikutnya</button>
+                {% else %}
+                    <!-- Tampilkan saat selesai-->
+                    <button name="tombol_selesai" type="submit" class="btn btn-warning pull-right" value="selesai">Selesai Mengerjakan</button>
+                {% endif %}
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+    </section>
+
+{% endblock %}
+
+{% block added_js %}
+{#    Timer#}
+    <script src="{% static 'easytimer/easytimer.min.js' %}"></script>
+    <script type="text/javascript">
+        var timer = new Timer();
+        timer.start({countdown: true, startValues: {seconds: {{ sisa_detik }} }});
+        timer.addEventListener('secondsUpdated', function (e) {
+        $('#countDownSelesai').html(timer.getTimeValues().toString());
+        })
+    </script>
+    <script type="text/javascript">
+    function onPindahSoal()
+{
+  if(document.pressed == 'sebelumnya')
+  {
+   document.formsoal.action ="{% url 'mulai_ujian' id_ujian=id_ujian nomor_soal=nomor_soal_sebelumnya%}";
+  }
+  else if(document.pressed == 'berikutnya')
+  {
+    document.formsoal.action ="{% url 'mulai_ujian' id_ujian=id_ujian nomor_soal=nomor_soal_berikutnya%}";
+  }
+  else if(document.pressed == 'selesai')
+  {
+    document.formsoal.action ="{% url 'mulai_ujian' id_ujian=id_ujian nomor_soal=nomor_soal_berikutnya%}";
+  }
+  return true;
+}
+    </script>
+{% endblock %}
