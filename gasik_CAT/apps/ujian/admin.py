@@ -5,6 +5,7 @@ from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 #admin.site.register(Ujian)
 #admin.site.register(SoalUjian)
 
+
 class JawabanInLine(NestedStackedInline):
     model = JawabanSoal
     extra = 1
