@@ -13,6 +13,7 @@ class ProfilUser(models.Model):
     kecamatan = models.CharField(max_length=50)
     desa = models.CharField(max_length=50)
     formasi = models.CharField(max_length=50)
+    paket_soal = models.CharField(max_length=5)
 
 
     def __str__(self):

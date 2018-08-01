@@ -11,6 +11,7 @@ class Ujian(models.Model):
     waktu_selesai = models.DateTimeField()
     waktu_diubah = models.DateTimeField(auto_now=True)
     aktif = models.BooleanField(default=True)
+    paket_soal = models.CharField(max_length=5)
 
     def __str__(self):
         return self.nama_ujian
@@ -37,7 +38,7 @@ class HasilUjian(models.Model):
     ujian = models.ForeignKey(Ujian, on_delete=models.CASCADE)
     waktu_mulai_mengerjakan = models.DateTimeField(auto_created=True)
     # Waktu selesai diisi setelah user menekan tombol submit
-    waktu_selesai_mengerjakan = models.DateTimeField(null=True)
+    selesai_mengerjakan = models.BooleanField(default=False)
 
     def __str__(self):
         return self.ujian.nama_ujian + ' : ' + self.user.username

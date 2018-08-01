@@ -15,17 +15,20 @@ admin.site.unregister(User)
 class ProfilUserInline(admin.StackedInline):
     model = ProfilUser
     extra = 0
-    fields = ["nama_peserta", "kecamatan", "desa", "formasi"]
+    fields = ["nama_peserta", "kecamatan", "desa", "formasi", "paket_soal"]
     min_num = 1
 
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
     inlines = [ProfilUserInline]
     fields = ["username", "password"]
-    list_display = ["username", "get_nama_peserta", "get_kecamatan", "get_desa", "get_formasi"]
+    list_display = ["username", "get_nama_peserta", "get_kecamatan", "get_desa", "get_formasi", "get_paket_soal"]
     list_filter =  ["username"]
 
     # Custom list display
+    def get_paket_soal(self, obj):
+        return obj.profiluser.paket_soal
+
     def get_nama_peserta(self, obj):
         return obj.profiluser.nama_peserta
 
@@ -50,6 +53,9 @@ class CustomUserAdmin(admin.ModelAdmin):
     get_formasi.admin_order_field = 'formasi'
     get_formasi.short_description = 'Formasi'
 
+    get_paket_soal.admin_order_field = 'paket_soal'
+    get_paket_soal.short_description = 'Paket Soal'
+
     # Custom upload from csv
     change_list_template = 'custom_admin/user_changelist.html'
 
@@ -69,8 +75,9 @@ class CustomUserAdmin(admin.ModelAdmin):
             try :
                 for row in reader:
                     # Buat user baru
+                    # 0 : Username (nomor peserta), 1: password, 2 : nama peserta, 3: kecamatan, 4 : desa, 5: Formasi, 6 : Paket soal
                     user = User.objects.create_user(username=row[0], password=row[1])
-                    profil_user = ProfilUser(user=user,nama_peserta=row[2], kecamatan=row[3], desa=row[4], formasi=row[5])
+                    profil_user = ProfilUser(user=user,nama_peserta=row[2], kecamatan=row[3], desa=row[4], formasi=row[5], paket_soal=row[6])
                     profil_user.save()
                 self.message_user(request, "Peserta berhasil ditambahkan")
                 return redirect("..")

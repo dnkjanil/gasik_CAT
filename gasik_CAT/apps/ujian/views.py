@@ -16,7 +16,7 @@ from gasik_CAT.apps.pdfs.models import HasilUjianPDFConfig
 def informasi_ujian(request):
     if request.method == "GET":
         # Data Ujian diambil yang aktif dan paling baru
-        ujian = Ujian.objects.filter(aktif=True).last()
+        ujian = Ujian.objects.filter(aktif=True, paket_soal=request.user.profiluser.paket_soal).last()
         # Pastikan ada ujian yang aktif
         if (ujian):
             # Jumlah soal
@@ -42,7 +42,7 @@ def informasi_ujian(request):
 def mulai_ujian(request, id_ujian, nomor_soal):
     try:
         # Periksa kode ujian
-        ujian = Ujian.objects.get(pk=id_ujian)
+        ujian = Ujian.objects.get(pk=id_ujian, paket_soal=request.user.profiluser.paket_soal)
     except Ujian.DoesNotExist:
         sweetify.error(request, 'Ujian tidak dapat ditemukan')
         return HttpResponseRedirect(reverse('informasi_ujian'))
@@ -58,7 +58,7 @@ def mulai_ujian(request, id_ujian, nomor_soal):
                 hasil_ujian.save()
 
             # Periksa apakah user telah mengerjakan ujian
-            if not hasil_ujian.waktu_selesai_mengerjakan:
+            if not hasil_ujian.selesai_mengerjakan:
                 # Periksa kode soal
                 try:
                     soal = SoalUjian.objects.filter(ujian=ujian)[int(nomor_soal)-1:int(nomor_soal)]
@@ -127,7 +127,7 @@ def mulai_ujian(request, id_ujian, nomor_soal):
                                     return HttpResponseRedirect(reverse(mulai_ujian, kwargs={'id_ujian': id_ujian, 'nomor_soal': int(nomor_soal) - 1}))
                                 elif 'tombol_selesai' in request.POST:
                                     # Ubah status pengerjaan soal user
-                                    hasil_ujian.waktu_selesai_mengerjakan = datetime.datetime.now()
+                                    hasil_ujian.selesai_mengerjakan = True
                                     hasil_ujian.save()
                                     return HttpResponseRedirect(reverse('informasi_ujian'))
                             else:
@@ -151,11 +151,11 @@ def mulai_ujian(request, id_ujian, nomor_soal):
                 return HttpResponseRedirect(reverse('informasi_ujian'))
             else:
                 # Apabila waktu pengerjaan selesai
-                if hasil_ujian.waktu_selesai_mengerjakan:
+                if hasil_ujian.selesai_mengerjakan:
                     sweetify.info(request, 'Ujian telah selesai dikerjakan')
                     return HttpResponseRedirect(reverse('informasi_ujian'))
                 else:
-                    hasil_ujian.waktu_selesai_mengerjakan = datetime.datetime.now()
+                    hasil_ujian.selesai_mengerjakan = True
                     hasil_ujian.save()
                     sweetify.error(request, 'Ujian telah selesai atau belum dapat diakses')
                     return HttpResponseRedirect(reverse('informasi_ujian'))
@@ -164,7 +164,7 @@ def mulai_ujian(request, id_ujian, nomor_soal):
 def lihat_hasil_ujian(request):
     if request.method == "GET":
         # Data Ujian diambil yang aktif dan paling baru
-        ujian = Ujian.objects.filter(aktif=True).last()
+        ujian = Ujian.objects.filter(aktif=True, paket_soal=request.user.profiluser.paket_soal).last()
         # Pastikan ada ujian yang aktif
         if (ujian):
             # Periksa apakah user telah mengerjakan ujian
@@ -183,12 +183,12 @@ def lihat_hasil_ujian(request):
 
             # Periksa waktu ujian
             if (not ((datetime.datetime.now() <= ujian.waktu_selesai.replace(tzinfo=None) + datetime.timedelta(hours=7)) and (
-                    datetime.datetime.now() >= ujian.waktu_mulai.replace(tzinfo=None) + datetime.timedelta(hours=7))) and not hasil_ujian.waktu_selesai_mengerjakan):
+                    datetime.datetime.now() >= ujian.waktu_mulai.replace(tzinfo=None) + datetime.timedelta(hours=7))) and not hasil_ujian.selesai_mengerjakan):
                 # Jika waktu telah habis dan user menekan halaman hasil
-                hasil_ujian.waktu_selesai_mengerjakan = datetime.datetime.now()
+                hasil_ujian.selesai_mengerjakan = True
                 hasil_ujian.save()
 
-            if hasil_ujian.waktu_selesai_mengerjakan:
+            if hasil_ujian.selesai_mengerjakan:
                 # Ambil konfigurasi pdf
                 konfigurasi_pdf = HasilUjianPDFConfig.objects.filter().last()
                 print(konfigurasi_pdf.logo_kiri)
@@ -253,7 +253,6 @@ def lihat_hasil_ujian(request):
             else:
                 sweetify.error(request, 'Maaf, waktu ujian masih berlangsung atau anda belum meyelesaikan ujian')
                 return HttpResponseRedirect(reverse('informasi_ujian'))
-
 
         else:
             sweetify.error(request, 'Maaf, belum ada ujian yang tersedia')

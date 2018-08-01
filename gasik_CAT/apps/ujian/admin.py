@@ -19,8 +19,8 @@ class SoalInline(NestedStackedInline):
 
 class UjianAdmin(NestedModelAdmin):
     model = Ujian
-    list_display = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah', 'aktif')
-    list_filter = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah')
+    list_display = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah', 'aktif', 'paket_soal')
+    list_filter = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah', 'paket_soal')
     inlines = [SoalInline]
 
 
