@@ -163,6 +163,7 @@ def mulai_ujian(request, id_ujian, nomor_soal):
 @login_required()
 def lihat_hasil_ujian(request):
     if request.method == "GET":
+        # Todo : Periksa langakah apa saja yang akan diarahkan ke halaman ini
         # Data Ujian diambil yang aktif dan paling baru
         ujian = Ujian.objects.filter(aktif=True, paket_soal=request.user.profiluser.paket_soal).last()
         # Pastikan ada ujian yang aktif
@@ -191,13 +192,12 @@ def lihat_hasil_ujian(request):
             if hasil_ujian.selesai_mengerjakan:
                 # Ambil konfigurasi pdf
                 konfigurasi_pdf = HasilUjianPDFConfig.objects.filter().last()
-                print(konfigurasi_pdf.logo_kiri)
 
-                # Create the HttpResponse object with the appropriate PDF headers.
+                # Buat response http dengan header pdf
                 response = HttpResponse(content_type='application/pdf')
                 response['Content-Disposition'] = 'filename="somefilename.pdf"'
 
-                # Create the PDF object, using the response object as its "file."
+                # Buat objek PDF
                 p = canvas.Canvas(response, pagesize=A4)
                 p.setFont('Helvetica', 10)
                 p.setLineWidth(1)
