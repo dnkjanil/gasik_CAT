@@ -1,8 +1,8 @@
 from django.contrib import admin
-from gasik_CAT.apps.user_profile.models import ProfilUser
 from django.contrib.auth.models import User
 from django.urls import path
 import csv
+from django.db import transaction
 from django.shortcuts import redirect, render
 from gasik_CAT.apps.authenticate.forms import UserCSVImportForm
 from io import TextIOWrapper
@@ -71,21 +71,31 @@ class CustomUserAdmin(admin.ModelAdmin):
         if request.method == "POST":
             # Ubah dari bytes ke string
             csv_file = TextIOWrapper(request.FILES['csv_file'].file, encoding=request.encoding)
-            reader = csv.reader(csv_file, delimiter=',')
+            reader = csv.reader(csv_file, delimiter=';')
             try :
+                # Tandai transaksi yang berlangsung
+                sid = transaction.savepoint()
                 for row in reader:
-                    # Buat user baru
-                    # 0 : Username (nomor peserta), 1: password, 2 : nama peserta, 3: kecamatan, 4 : desa, 5: Formasi, 6 : Paket soal
-                    user = User.objects.create_user(username=row[0], password=row[1])
-                    profil_user = ProfilUser(user=user,nama_peserta=row[2], kecamatan=row[3], desa=row[4], formasi=row[5], paket_soal=row[6])
-                    profil_user.save()
-                self.message_user(request, "Peserta berhasil ditambahkan")
-                return redirect("..")
-            except IntegrityError:
-                self.message_user(request, "Peserta : {} sudah pernah ditambahkan".format(row[0]), level=messages.ERROR)
-                return redirect("..")
+                    try:
+                        # Buat user baru
+                        # 0 : Username (nomor peserta), 1: password, 2 : nama peserta, 3: kecamatan, 4 : desa, 5: Formasi, 6 : Paket soal
+                        user = User.objects.create_user(username=row[0], password=row[1])
+                        profil_user = ProfilUser(user=user, nama_peserta=row[2], kecamatan=row[3], desa=row[4], formasi=row[5], paket_soal=row[6])
+                        transaction.savepoint_commit(sid=sid)
+                        profil_user.save()
+                    except IntegrityError:
+                        # Jika ada transaksi yang gagal maka semua transaksi dibatalkan
+                        transaction.savepoint_rollback(sid)
+                        self.message_user(request, "Peserta : {} sudah pernah ditambahkan".format(row[0]), level=messages.ERROR)
+                        return redirect("..")
+
+                # Commit transaksi
+                transaction.savepoint_commit(sid=sid)
             except:
                 self.message_user(request, "Format dokumen tidak valid", level=messages.ERROR)
+                return redirect("..")
+            else:
+                self.message_user(request, "Peserta berhasil ditambahkan")
                 return redirect("..")
 
 

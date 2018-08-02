@@ -54,7 +54,7 @@ def mulai_ujian(request, id_ujian, nomor_soal):
                 hasil_ujian = HasilUjian.objects.get(user=request.user, ujian=ujian)
             except HasilUjian.DoesNotExist:
                 # Enroll user kedalam ujian
-                hasil_ujian = HasilUjian(user=request.user, ujian=ujian)
+                hasil_ujian = HasilUjian(user=request.user, ujian=ujian, waktu_mulai_mengerjakan=datetime.datetime.now())
                 hasil_ujian.save()
 
             # Periksa apakah user telah mengerjakan ujian

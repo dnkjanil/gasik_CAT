@@ -10,7 +10,7 @@ class Ujian(models.Model):
     waktu_mulai = models.DateTimeField()
     waktu_selesai = models.DateTimeField()
     waktu_diubah = models.DateTimeField(auto_now=True)
-    aktif = models.BooleanField(default=True)
+    aktif = models.BooleanField(default=False)
     paket_soal = models.CharField(max_length=5)
 
     def __str__(self):

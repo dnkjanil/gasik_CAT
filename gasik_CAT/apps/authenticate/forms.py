@@ -19,3 +19,4 @@ class UserCSVImportForm(forms.Form):
     csv_file = forms.FileField()
 
 
+
