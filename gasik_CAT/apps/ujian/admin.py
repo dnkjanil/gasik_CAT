@@ -13,6 +13,7 @@ from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from babel.dates import format_date, format_datetime, format_time
+from gasik_CAT.settings import BASE_DIR
 
 
 
@@ -152,8 +153,14 @@ class HasilUjianAdmin(admin.ModelAdmin):
             for hasil_ujian in semua_hasil_ujian:
                 p.setFont('Helvetica', 10)
                 p.setLineWidth(1)
+
+                # Logo kiri
+                p.drawImage('{}/{}/{}'.format(BASE_DIR, 'media', konfigurasi_pdf.logo_kiri), 40, 760, mask='auto', width=80, height=60)
+                # Logo kanan
+                p.drawImage('{}/{}/{}'.format(BASE_DIR, 'media', konfigurasi_pdf.logo_kanan), 500, 760, mask='auto', width=43, height=55)
+
                 # Garis header
-                p.line(100, 750, 500, 750)
+                p.line(40, 750, 560, 750)
                 # Header
                 p.drawString(210, 800, 'PANITIA UJI KOMPETENSI/SELEKSI')
                 p.drawString(170, 785, 'PENGISIAN PENGANGKATAN PERANGKAT DESA')
@@ -167,7 +174,7 @@ class HasilUjianAdmin(admin.ModelAdmin):
 
                 # Waktu cetak
                 p.setFont('Helvetica', 8)
-                p.drawString(260, 685, format_date(datetime.datetime.now(), format='full', locale='id'))
+                p.drawString(252, 685, format_date(datetime.datetime.now(), format='full', locale='id'))
 
                 # Data Peserta
                 p.setFont('Helvetica', 12)
@@ -180,7 +187,7 @@ class HasilUjianAdmin(admin.ModelAdmin):
                 p.drawString(60, 590, 'DESA                        :')
                 p.drawString(180, 590, hasil_ujian.user.profiluser.desa)
                 p.drawString(60, 570, 'FORMASI                 :')
-                p.drawString(180, 570, hasil_ujian.user.profiluser.formasi)
+                p.drawString(180, 570, hasil_ujian.user.profiluser.desa)
                 p.drawString(60, 550, 'NILAI                        :')
 
                 # Nilai
@@ -198,6 +205,15 @@ class HasilUjianAdmin(admin.ModelAdmin):
                             pass
 
                 p.drawString(180, 550, str(nilai))
+
+                # TTD Peserta
+                p.drawString(80, 450, 'Peserta,')
+                p.drawString(77, 380, '({})'.format(hasil_ujian.user.profiluser.nama_peserta))
+
+                # TTD Penguji
+                p.drawString(420, 450, 'Pengawas Ujian,')
+                p.drawString(410, 380, '(.................................)')
+
                 p.showPage()
 
             # Simpan semua data dan kembalikan dokumen

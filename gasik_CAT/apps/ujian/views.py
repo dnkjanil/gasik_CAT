@@ -9,6 +9,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from babel.dates import format_date, format_datetime, format_time
 from gasik_CAT.apps.pdfs.models import HasilUjianPDFConfig
+from gasik_CAT.settings import BASE_DIR
 
 # Create your views here.
 
@@ -193,6 +194,8 @@ def lihat_hasil_ujian(request):
                 # Ambil konfigurasi pdf
                 konfigurasi_pdf = HasilUjianPDFConfig.objects.filter().last()
 
+                print(konfigurasi_pdf.logo_kiri)
+
                 # Buat response http dengan header pdf
                 response = HttpResponse(content_type='application/pdf')
                 response['Content-Disposition'] = 'filename="somefilename.pdf"'
@@ -201,8 +204,14 @@ def lihat_hasil_ujian(request):
                 p = canvas.Canvas(response, pagesize=A4)
                 p.setFont('Helvetica', 10)
                 p.setLineWidth(1)
+
+                # Logo kiri
+                p.drawImage('{}/{}/{}'.format(BASE_DIR, 'media',konfigurasi_pdf.logo_kiri), 40, 760, mask='auto', width=80, height=60)
+                # Logo kanan
+                p.drawImage('{}/{}/{}'.format(BASE_DIR, 'media', konfigurasi_pdf.logo_kanan), 500, 760, mask='auto', width=43, height=55)
+
                 # Garis header
-                p.line(100, 750, 500, 750)
+                p.line(40, 750, 560, 750)
                 # Header
                 p.drawString(210, 800, 'PANITIA UJI KOMPETENSI/SELEKSI')
                 p.drawString(170, 785, 'PENGISIAN PENGANGKATAN PERANGKAT DESA')
@@ -216,7 +225,7 @@ def lihat_hasil_ujian(request):
 
                 # Waktu cetak
                 p.setFont('Helvetica', 8)
-                p.drawString(260, 685, format_date(datetime.datetime.now(), format='full', locale='id'))
+                p.drawString(252, 685, format_date(datetime.datetime.now(), format='full', locale='id'))
 
                 # Data Peserta
                 p.setFont('Helvetica', 12)
@@ -247,6 +256,15 @@ def lihat_hasil_ujian(request):
                             pass
 
                 p.drawString(180, 550, str(nilai))
+
+                # TTD Peserta
+                p.drawString(80, 450, 'Peserta,')
+                p.drawString(77, 380, '({})'.format(request.user.profiluser.nama_peserta))
+
+                # TTD Penguji
+                p.drawString(420, 450, 'Pengawas Ujian,')
+                p.drawString(410, 380, '(.................................)')
+
                 p.showPage()
                 p.save()
                 return response
