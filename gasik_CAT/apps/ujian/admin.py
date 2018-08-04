@@ -16,6 +16,31 @@ from babel.dates import format_date, format_datetime, format_time
 from gasik_CAT.settings import BASE_DIR
 
 
+class JawabanUserAdmin(admin.ModelAdmin):
+
+    list_display = ["get_username", "get_paket_ujian", "soal_ujian", "waktu_mengisi", "huruf_jawaban"]
+
+    # Hapus hak tambah
+    def has_add_permission(self, request):
+        return False
+
+    # Hapus hak ubah
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    # # Hapus hak hapus
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
+
+    def get_username(self, obj):
+        return obj.hasil_ujian.user.username
+
+    def get_paket_ujian(self, obj):
+        return obj.hasil_ujian.ujian.paket_soal
+
+    get_username.short_description = 'Nomor Peserta'
+    get_paket_ujian.short_description = 'Paket Ujian'
+
 
 class JawabanInLine(NestedStackedInline):
     model = JawabanSoal
@@ -100,6 +125,7 @@ class UjianAdmin(NestedModelAdmin):
 class HasilUjianAdmin(admin.ModelAdmin):
 
     list_display = ["get_username", "get_full_name", "get_ujian", "get_waktu_mulai_mengerjakan", "get_selesai_mengerjakan"]
+    ordering = ['user__username']
 
     # Custom list display
     def get_username(self, obj):
@@ -223,4 +249,4 @@ class HasilUjianAdmin(admin.ModelAdmin):
 
 admin.site.register(Ujian, UjianAdmin)
 admin.site.register(HasilUjian, HasilUjianAdmin)
-admin.site.register(JawabanUser)
+admin.site.register(JawabanUser, JawabanUserAdmin)

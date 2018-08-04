@@ -24,6 +24,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     fields = ["username", "password"]
     list_display = ["username", "get_nama_peserta", "get_kecamatan", "get_desa", "get_formasi", "get_paket_soal"]
     list_filter =  ["username"]
+    ordering = ['username']
 
     # Custom list display
     def get_paket_soal(self, obj):

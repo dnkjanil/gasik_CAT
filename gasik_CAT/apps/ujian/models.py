@@ -43,6 +43,9 @@ class HasilUjian(models.Model):
     def __str__(self):
         return self.ujian.nama_ujian + ' : ' + self.user.username
 
+    class Meta:
+        ordering = ('user__username',)
+
 class JawabanUser(models.Model):
      soal_ujian = models.ForeignKey(SoalUjian, on_delete=models.CASCADE)
      hasil_ujian = models.ForeignKey(HasilUjian, on_delete=models.CASCADE)
