@@ -38,9 +38,11 @@
                 {% csrf_token %}
                   {% for pilihan in form.daftar_pilihan %}
                 <div class="radio">
-                        {{ pilihan.tag }}
-                        {{ pilihan.data.value }} :
-                        {{ pilihan.choice_label }}
+                    <label>
+                        {{ pilihan.tag |linebreaksbr}}
+                        {{ pilihan.data.value |linebreaksbr}} :
+                        {{ pilihan.choice_label |linebreaksbr}}
+                    </label>
                 </div>
                 {% endfor %}
              <div class="box-footer">
