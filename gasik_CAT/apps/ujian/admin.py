@@ -58,7 +58,7 @@ class SoalInline(NestedModelAdmin):
     def get_paket_soal(self, obj):
         return obj.ujian.paket_soal
 
-    get_paket_soal.short_description = 'Paket Soal'
+    get_paket_soal.short_description = 'Paket Soal '
 
 
 class UjianAdmin(admin.ModelAdmin):
