@@ -19,7 +19,7 @@ class Ujian(models.Model):
 class SoalUjian(models.Model):
     id = models.AutoField(primary_key=True)
     ujian = models.ForeignKey(Ujian, on_delete=models.CASCADE)
-    teks_soal = models.CharField(max_length=255)
+    teks_soal = models.TextField()
     huruf_jawaban = models.CharField(max_length=1)
 
     def __str__(self):
@@ -27,7 +27,7 @@ class SoalUjian(models.Model):
 
 class JawabanSoal(models.Model):
     soal = models.ForeignKey(SoalUjian, on_delete=models.CASCADE)
-    teks_jawaban = models.CharField(max_length=255)
+    teks_jawaban = models.TextField()
     huruf = models.CharField(max_length=1)
 
     def __str__(self):
