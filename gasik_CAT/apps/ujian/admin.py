@@ -52,6 +52,14 @@ class SoalInline(NestedModelAdmin):
     extra = 1
     fk_name = 'ujian'
     inlines = [JawabanInLine]
+    list_display = ["teks_soal", "huruf_jawaban", "get_paket_soal"]
+    ordering = ['ujian__paket_soal']
+
+    def get_paket_soal(self, obj):
+        return obj.ujian.paket_soal
+
+    get_paket_soal.short_description = 'Paket Soal'
+
 
 class UjianAdmin(admin.ModelAdmin):
     model = Ujian
