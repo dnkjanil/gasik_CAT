@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Todo : Please remove the key before pushing into git
-SECRET_KEY = os.environ.get('SECRET_KEY', 'af66(43+m)&o)=aptknf#e(6$)a0%&d5^uvtbicmf01tt_$m*3')
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
