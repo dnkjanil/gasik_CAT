@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 
 # Application definition

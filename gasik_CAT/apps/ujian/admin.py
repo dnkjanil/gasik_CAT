@@ -77,7 +77,7 @@ class UjianAdmin(NestedModelAdmin):
             # Ubah dari bytes ke string
             form = UjianCSVImportForm(request.POST, request.FILES)
             csv_file = TextIOWrapper(request.FILES['csv_file'].file, encoding=request.encoding)
-            reader = csv.reader(csv_file, delimiter=';')
+            reader = csv.reader(csv_file, delimiter='@')
 
             if form.is_valid():
                 # Pastikan bahwa paket soal belum pernah ditambahkan
@@ -90,6 +90,7 @@ class UjianAdmin(NestedModelAdmin):
                         ujian = Ujian(nama_ujian=form.cleaned_data['nama_ujian'], paket_soal=form.cleaned_data['paket_soal'], waktu_mulai=datetime.datetime.now(), waktu_selesai=datetime.datetime.now())
                         ujian.save()
                         for row in reader:
+                            print(row)
                             # Tambahkan soal yang ada
                             soal = SoalUjian(ujian=ujian, teks_soal=row[0], huruf_jawaban=row[1])
                             soal.save()
@@ -104,7 +105,7 @@ class UjianAdmin(NestedModelAdmin):
                             pilihan_d.save()
                             pilihan_e = JawabanSoal(soal=soal, teks_jawaban=row[6], huruf='E')
                             pilihan_e.save()
-                    except:
+                    except Exception as e:
                         self.message_user(request, "Terdapat kesalahan pada format ujian", level=messages.ERROR)
                         return redirect("..")
                     else:
