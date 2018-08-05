@@ -47,17 +47,16 @@ class JawabanInLine(NestedStackedInline):
     extra = 1
     fk_name = 'soal'
 
-class SoalInline(NestedStackedInline):
+class SoalInline(NestedModelAdmin):
     model = SoalUjian
     extra = 1
     fk_name = 'ujian'
     inlines = [JawabanInLine]
 
-class UjianAdmin(NestedModelAdmin):
+class UjianAdmin(admin.ModelAdmin):
     model = Ujian
     list_display = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah', 'aktif', 'paket_soal')
     list_filter = ('nama_ujian', 'waktu_mulai', 'waktu_selesai', 'waktu_diubah', 'paket_soal')
-    inlines = [SoalInline]
 
     # Custom upload from csv
     change_list_template = 'custom_admin/ujian_changelist.html'
@@ -250,4 +249,5 @@ class HasilUjianAdmin(admin.ModelAdmin):
 
 admin.site.register(Ujian, UjianAdmin)
 admin.site.register(HasilUjian, HasilUjianAdmin)
+admin.site.register(SoalUjian, SoalInline)
 admin.site.register(JawabanUser, JawabanUserAdmin)
