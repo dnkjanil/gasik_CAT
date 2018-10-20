@@ -1,0 +1,131 @@
+{% load  staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Gasik CAT | {% block title %}{% endblock %}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="{% static 'Ionicons/css/ionicons.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'adminlte/css/AdminLTE.min.css' %}">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="{% static 'adminlte/css/skins/skin-red-light.min.css' %}">
+    {#Added css#}
+    {% block added_css %}{% endblock %}
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-red-light sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="../../index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>G</b>asik</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">Gasik<b>CAT</b>-Admin</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- =============================================== -->
+
+  <!-- Left side column. contains the sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">Menu Navigasi</li>
+        <li class="treeview {% block ujian_main_active %}{% endblock %}">
+          <a href="#">
+            <i class="fa fa-align-left"></i>
+            <span>Kelola</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="{% block ujian_active %}{% endblock %}"><a href="{% url 'informasi_ujian' %}"><i class="fa fa-play"></i> Mulai Ujian Tertulis</a></li>
+            <li class="{% block hasil_ujian_active %}{% endblock %}"><a href="{% url 'lihat_hasil_ujian' %}"><i class="fa fa-info-circle"></i> Hasil Ujian Tertulis</a></li>
+          </ul>
+        </li>
+        <li class="{% block user_profile_active %} {% endblock %}" ><a href="{% url 'user_profile' %}"><i class="fa fa-user"></i> <span>Profil</span></a></li>
+        <li><a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> <span>Keluar</span></a></li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- =============================================== -->
+
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+      {% block content %}{% endblock %}
+  </div>
+  <!-- Content Wrapper. Contains page content -->
+
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 0.1 Alpha
+    </div>
+    <strong>Copyright &copy; 2018 <a href="https://github.com/dnkjanil">Dnkjanil</a>.</strong> All rights
+    reserved.
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'fastclick/lib/fastclick.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'adminlte/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'adminlte/js/demo.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
+{#Added js library#}
+{% block added_js %}{% endblock %}
+<!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support -->
+<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+<script>
+  $(document).ready(function () {
+    $('.sidebar-menu').tree()
+  })
+  {% block added_js_function %}{% endblock  %}
+</script>
+{% load sweetify %}
+{% sweetify %}
+</body>
+</html>

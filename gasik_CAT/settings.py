@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Todo : Please remove the key before pushing into git
-SECRET_KEY = os.environ.get('SECRET_KEY', '')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'FAKE_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'gasik_CAT.apps.pdfs',
     'gasik_CAT.apps.user_profile',
     'gasik_CAT.apps.ujian',
-    'nested_inline'
+    'nested_inline',
+    'gasik_CAT.apps.profil',
+    'gasik_CAT.apps.kelola'
 ]
 
 MIDDLEWARE = [

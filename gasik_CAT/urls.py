@@ -20,7 +20,8 @@ from django.conf import settings
 from gasik_CAT.apps.authenticate import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin-django/', admin.site.urls),
+    path('kelola/', include('gasik_CAT.apps.kelola.urls')),
     path('auth/', include('gasik_CAT.apps.authenticate.urls')),
     path('profil/', include('gasik_CAT.apps.user_profile.urls')),
     path('ujian/', include('gasik_CAT.apps.ujian.urls'))
